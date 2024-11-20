@@ -1,0 +1,7 @@
+diskpart
+list disk
+<SELECT DISK>
+clean
+create partition primary
+format fs=fat32 quick
+exit
