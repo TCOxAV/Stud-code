@@ -1,6 +1,9 @@
+#to convert a booted pendrive/flashdrive to storage 
+
+"open CMD as Admin"
 diskpart
 list disk
-<SELECT DISK>
+select <DISK> "disk you want to change. like disk 2, disk 3, something"
 clean
 create partition primary
 format fs=fat32 quick
