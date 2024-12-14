@@ -1,0 +1,157 @@
+PORT SCANNER
+
+###WITHOUT TIMING###:::
+###WITHOUT TIMING###:::
+###WITHOUT TIMING###:::
+
+import socket
+
+def scan_port(ip, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(0.5)
+        result = sock.connect_ex((ip, port))
+        if result == 0:
+            return True
+        sock.close()
+    except Exception as e:
+        pass
+    return False
+
+def main():
+    while True:
+        print("-" * 50)
+        print("Port Scanner Menu")
+        print("-" * 50)
+        print("1. Scan by IP Address")
+        print("2. Scan by Hostname")
+        print("3. Exit")
+        print("-" * 50)
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            ip_address = input("Enter the target IP address: ")
+            start_port = int(input("Enter the starting port: "))
+            end_port = int(input("Enter the ending port: "))
+
+            print("-" * 50)
+            print("Scanning ports on", ip_address)
+            print("-" * 50)
+
+            open_ports = []
+            for port in range(start_port, end_port + 1):
+                if scan_port(ip_address, port):
+                    open_ports.append(port)
+
+            if open_ports:
+                print("Open ports:")
+                for port in open_ports:
+                    print(f"Port {port}")
+            else:
+                print("No open ports found.")
+
+        elif choice == "2":
+            hostname = input("Enter the target hostname: ")
+            start_port = int(input("Enter the starting port: "))
+            end_port = int(input("Enter the ending port: "))
+
+            try:
+                ip_address = socket.gethostbyname(hostname)
+                print("-" * 50)
+                print("Scanning ports on", ip_address)
+                print("-" * 50)
+
+                open_ports = []
+                for port in range(start_port, end_port + 1):
+                    if scan_port(ip_address, port):
+                        open_ports.append(port)
+
+                if open_ports:
+                    print("Open ports:")
+                    for port in open_ports:
+                        print(f"Port {port}")
+                else:
+                    print("No open ports found.")
+
+            except socket.error:
+                print("Could not resolve hostname.")
+
+        elif choice == "3":
+            print("Exiting...")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
+###WITH TIMING###:::
+###WITH TIMING###:::
+###WITH TIMING###:::
+
+import socket
+import time
+
+def scan_port(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((host, port))
+        if result == 0:
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
+
+def main():
+    print("-" * 50)
+    print("Welcome to the Port Scanner")
+    print("-" * 50)
+
+    while True:
+        choice = input("Enter 1 to scan by IP or 2 to scan by name: ")
+        if choice not in ['1', '2']:
+            print("Invalid choice. Please enter 1 or 2.")
+            continue
+
+        if choice == '1':
+            target_ip = input("Enter the target IP address: ")
+        else:
+            target_host = input("Enter the target hostname: ")
+            target_ip = socket.gethostbyname(target_host)
+
+        num_ports = int(input("Enter the number of ports to scan: "))
+
+        start_time = time.time()
+        print("-" * 50)
+        print(f"Scanning {target_ip}...")
+        print("-" * 50)
+
+        open_ports = []
+        for port in range(1, num_ports + 1):
+            if scan_port(target_ip, port):
+                open_ports.append(port)
+
+        end_time = time.time()
+        total_time = end_time - start_time
+
+        print("-" * 50)
+        print(f"Open ports on {target_ip}:")
+        if open_ports:
+            for port in open_ports:
+                print(f"Port {port} is open")
+        else:
+            print("No open ports found.")
+        print(f"Scan completed in {total_time:.2f} seconds.")
+        print("-" * 50)
+
+        another_scan = input("Do you want to scan another target? (yes/no): ")
+        if another_scan.lower() != 'yes':
+            break
+
+if __name__ == "__main__":
+    main()
