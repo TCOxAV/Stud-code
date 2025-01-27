@@ -1,3 +1,0 @@
-# Stud-code
-
-nil------
